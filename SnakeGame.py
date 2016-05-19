@@ -5,6 +5,22 @@ import random
 from random import randint
 curses.initscr()
 
+def add():
+    input_file = open("name.txt", "a")#this opens up the file
+    name = input("enter your username: ")#this input asks the user to enter their username
+    #scores = input("enter your score: ")#this is another input that asks user for their score
+    print(name, " ", score, file=input_file)
+    #print(score,file=input_file)#it prints out the users name and is the commas and speech marks is what is also going to print before the score number is going to print
+    input_file.close()
+
+def print_score():
+    output_file = open("name.txt", "r+")
+    text_in_file = output_file.read()
+    print(text_in_file)
+    exit()
+
+
+
 def end_scene(scr):
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
@@ -19,8 +35,10 @@ def end_scene(scr):
     if event == ord("p"):
         main(scr)
     if event == ord("q"):
-        exit()
-    time.sleep(1)
+        curses.endwin()
+        add()
+        print_score()
+    #time.sleep(1)
     win.refresh
     win.getch()
 
