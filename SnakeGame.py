@@ -6,11 +6,9 @@ from random import randint
 curses.initscr()
 
 def add():
-    input_file = open("name.txt", "a")#this opens up the file
-    name = input("enter your username: ")#this input asks the user to enter their username
-    #scores = input("enter your score: ")#this is another input that asks user for their score
+    input_file = open("name.txt", "a")
+    name = input("enter your username: ")
     print(name, " ", score, file=input_file)
-    #print(score,file=input_file)#it prints out the users name and is the commas and speech marks is what is also going to print before the score number is going to print
     input_file.close()
 
 def print_score():
