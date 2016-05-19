@@ -15,6 +15,7 @@ def print_score():
     output_file = open("name.txt", "r+")
     text_in_file = output_file.read()
     print(text_in_file)
+    output_file.close()
     exit()
 
 
@@ -36,9 +37,7 @@ def end_scene(scr):
         curses.endwin()
         add()
         print_score()
-    #time.sleep(1)
-    win.refresh
-    win.getch()
+    time.sleep(1)
 
 
 def main(scr):
@@ -53,7 +52,9 @@ def main(scr):
     win.addstr(0, (curses.COLS - len(title)) // 4, title)
     head = [15, 10]
     food = [10,20]
+    enemy = [20,10]
     win.addch(food[0], food[1], '*')
+    win.addch(enemy[0], enemy[1], '+')
     body = [head[:]]*5
     snake = head + body
     game_over = False
@@ -64,18 +65,30 @@ def main(scr):
     messagne2 = str(len(body))
 
     while not game_over:
-        win.timeout(100 - (len(body)+1))
+        win.timeout(90 - (len(body)+1))
         win.addstr(0, 2, 'Score : ' + str(score) + ' ')# Printing score
+        if score < 0:
+            game_over = True
+            end_scene(scr)
 
 
         if win.inch(head[0], head[1]) == ord("*"):
             food = []
             score += 1
-            body.append(body[-1])
+            body.append(body[-1]*2)
             while food == []:
                 food = [random.randint(1, 18), random.randint(1, 58)]   #Next food's coordinates
                 if food in head: food = []
             win.addch(food[0], food[1], '*')
+
+        if win.inch(head[0], head[1]) == ord("+"):
+            enemy = []
+            score -= 1
+            while enemy == []:
+                for enemy in range(3):
+                    enemy = [random.randint(1, 18), random.randint(1, 58)]
+                    win.addch(enemy[0], enemy[1], '+')
+
 
         if part not in body:
             win.addch(part[0], part[1], " ")
