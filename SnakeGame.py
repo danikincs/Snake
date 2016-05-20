@@ -5,13 +5,13 @@ import random
 from random import randint
 curses.initscr()
 
-def add():
+def add():                                    #Add .txt file if not exists, stores player score.
     input_file = open("name.txt", "a")
     name = input("enter your username: ")
     print(name, " ", score, file=input_file)
     input_file.close()
 
-def print_score():
+def print_score():                           #Shows score in terminal, previous scores also appears
     output_file = open("name.txt", "r+")
     text_in_file = output_file.read()
     print(text_in_file)
@@ -20,7 +20,7 @@ def print_score():
 
 
 
-def end_scene(scr):
+def end_scene(scr):                          #It appears, when player loses, replay or exit
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     win.nodelay(0)
@@ -40,7 +40,7 @@ def end_scene(scr):
     time.sleep(1)
 
 
-def main(scr):
+def main(scr):                                                   #Main running, contains variables, snake movements
     curses.noecho()
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     curses.curs_set(0)
@@ -48,8 +48,8 @@ def main(scr):
     win.keypad(1)
     win.nodelay(0)
     win.border(0)
-    title = ' Sneaky Game ! '                                                   #add to bounce right to left if we can
-    win.addstr(0, (curses.COLS - len(title)) // 4, title)
+    title = ' Sneaky Game ! '
+    win.addstr(0, (curses.COLS - len(title)) // 4, title)         #setting important parameters of variables
     head = [15, 10]
     food = [10,20]
     enemy = [20,10]
@@ -65,8 +65,8 @@ def main(scr):
     messagne2 = str(len(body))
 
     while not game_over:
-        win.timeout(90 - (len(body)+1))
-        win.addstr(0, 2, 'Score : ' + str(score) + ' ')# Printing score
+        win.timeout(90 - (len(body)+1))                          #Snake gets faster if its body gets longer
+        win.addstr(0, 2, 'Score : ' + str(score) + ' ')          #Printing score
         if score < 0:
             game_over = True
             end_scene(scr)
@@ -86,7 +86,7 @@ def main(scr):
             score -= 1
             while enemy == []:
                 for enemy in range(3):
-                    enemy = [random.randint(1, 18), random.randint(1, 58)]
+                    enemy = [random.randint(1, 18), random.randint(1, 58)] #Enemy coordinates
                     win.addch(enemy[0], enemy[1], '+')
 
 
@@ -94,7 +94,7 @@ def main(scr):
             win.addch(part[0], part[1], " ")
         win.addch(head[0], head[1], "X")
 
-        movement = win.getch()
+        movement = win.getch()                                             #Snake movements
         if movement == curses.KEY_UP and direction != 1:
                 direction = 3
         elif movement == curses.KEY_DOWN and direction != 3:
@@ -120,11 +120,11 @@ def main(scr):
             body[z] = body[z-1]
         body[0] = head[:]
 
-        if win.inch(head[0], head[1]) == ord("X"):
+        if win.inch(head[0], head[1]) == ord("X"):       #Game over if snake runs into itself
             game_over = True
             end_scene(scr)
 
-        if head[1] == 0:
+        if head[1] == 0:                                 #Setting border
             game_over = True
             end_scene(scr)
         if head[0] == 0:
