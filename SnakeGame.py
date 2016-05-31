@@ -5,13 +5,15 @@ import random
 from random import randint
 curses.initscr()
 
-def add():                                    #Add .txt file if not exists, stores player score.
+
+def add():                                    # Add .txt file if not exists, stores player score.
     input_file = open("name.txt", "a")
     name = input("enter your username: ")
     print(name, " ", score, file=input_file)
     input_file.close()
 
-def print_score():                           #Shows score in terminal, previous scores also appears
+
+def print_score():                           # S hows score in terminal, previous scores also appears
     output_file = open("name.txt", "r+")
     text_in_file = output_file.read()
     print(text_in_file)
@@ -19,8 +21,7 @@ def print_score():                           #Shows score in terminal, previous 
     exit()
 
 
-
-def end_scene(scr):                          #It appears, when player loses, replay or exit
+def end_scene(scr):                          # It appears, when player loses, replay or exit
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     win.nodelay(0)
@@ -40,7 +41,21 @@ def end_scene(scr):                          #It appears, when player loses, rep
     time.sleep(1)
 
 
-def main(scr):                                                   #Main running, contains variables, snake movements
+def start_screen(scr):
+    win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
+    win.clear()
+    win.nodelay(0)
+    message1 = "Welcome to the Sneaky Game !"
+    message2 = "Press 1 to play Single Player, or Press 2 to play Multi Player!"
+    win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
+    win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2)+2, message2)
+    event = win.getch()
+    if event == ord("1"):
+        main(scr)
+    # if event == ord("2"):
+
+
+def main(scr):                                                   # Main running, contains variables, snake movements
     curses.noecho()
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     curses.curs_set(0)
@@ -49,10 +64,10 @@ def main(scr):                                                   #Main running, 
     win.nodelay(0)
     win.border(0)
     title = ' Sneaky Game ! '
-    win.addstr(0, (curses.COLS - len(title)) // 4, title)         #setting important parameters of variables
+    win.addstr(0, (curses.COLS - len(title)) // 4, title)         # setting important parameters of variables
     head = [15, 10]
-    food = [10,20]
-    enemy = [20,10]
+    food = [10, 20]
+    enemy = [20, 10]
     win.addch(food[0], food[1], '*')
     win.addch(enemy[0], enemy[1], '+')
     body = [head[:]]*5
@@ -65,20 +80,20 @@ def main(scr):                                                   #Main running, 
     messagne2 = str(len(body))
 
     while not game_over:
-        win.timeout(90 - (len(body)+1))                          #Snake gets faster if its body gets longer
-        win.addstr(0, 2, 'Score : ' + str(score) + ' ')          #Printing score
+        win.timeout(90 - (len(body)+1))                          # Snake gets faster if its body gets longer
+        win.addstr(0, 2, 'Score : ' + str(score) + ' ')          # Printing score
         if score < 0:
             game_over = True
             end_scene(scr)
-
 
         if win.inch(head[0], head[1]) == ord("*"):
             food = []
             score += 1
             body.append(body[-1]*2)
             while food == []:
-                food = [random.randint(1, 18), random.randint(1, 58)]   #Next food's coordinates
-                if food in head: food = []
+                food = [random.randint(1, 18), random.randint(1, 58)]   # Next food's coordinates
+                if food in head:
+                    food = []
             win.addch(food[0], food[1], '*')
 
         if win.inch(head[0], head[1]) == ord("+"):
@@ -86,15 +101,14 @@ def main(scr):                                                   #Main running, 
             score -= 1
             while enemy == []:
                 for enemy in range(3):
-                    enemy = [random.randint(1, 18), random.randint(1, 58)] #Enemy coordinates
+                    enemy = [random.randint(1, 18), random.randint(1, 58)]  # Enemy coordinates
                     win.addch(enemy[0], enemy[1], '+')
-
 
         if part not in body:
             win.addch(part[0], part[1], " ")
         win.addch(head[0], head[1], "X")
 
-        movement = win.getch()                                             #Snake movements
+        movement = win.getch()                                             # Snake movements
         if movement == curses.KEY_UP and direction != 1:
                 direction = 3
         elif movement == curses.KEY_DOWN and direction != 3:
@@ -103,7 +117,6 @@ def main(scr):                                                   #Main running, 
                 direction = 0
         elif movement == curses.KEY_LEFT and direction != 0:
                 direction = 2
-
 
         if direction == 0:
             head[1] += 1
@@ -114,17 +127,16 @@ def main(scr):                                                   #Main running, 
         elif direction == 3:
             head[0] -= 1
 
-
         part = body[-1][:]
         for z in range(len(body)-1, 0, -1):
             body[z] = body[z-1]
         body[0] = head[:]
 
-        if win.inch(head[0], head[1]) == ord("X"):       #Game over if snake runs into itself
+        if win.inch(head[0], head[1]) == ord("X"):       # Game over if snake runs into itself
             game_over = True
             end_scene(scr)
 
-        if head[1] == 0:                                 #Setting border
+        if head[1] == 0:                                 # Setting border
             game_over = True
             end_scene(scr)
         if head[0] == 0:
@@ -137,10 +149,8 @@ def main(scr):                                                   #Main running, 
             game_over = True
             end_scene(scr)
 
-
         win.refresh()
 
 
-
-curses.wrapper(main)
+curses.wrapper(start_screen)
 curses.endwin()
