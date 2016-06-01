@@ -97,7 +97,13 @@ def single_player(scr):
         if key not in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, 27]:     # If an invalid key is pressed
             key = prevKey
 
-        snake.insert(0, [snake[0][0] + (key == KEY_DOWN and 1) + (key == KEY_UP and -1), snake[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)])
+        snake.insert(
+            0,
+            [
+                snake[0][0] + (key == KEY_DOWN and 1) + (key == KEY_UP and -1),
+                snake[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)
+            ]
+        )
 
         if snake[0][0] == 0:  # goes up
             snake[0][0] = 22
@@ -120,11 +126,12 @@ def single_player(scr):
                     food = []
             win.addch(food[0], food[1], '*')
         else:
-            last = snake.pop()                                          # [1] If it does not eat the food, length decreases
+            last = snake.pop()
             win.addch(last[0], last[1], ' ')
         win.addch(snake[0][0], snake[0][1], '#')
 
     curses.endwin()
+
 
 def multi_player(scr):
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
@@ -149,16 +156,20 @@ def multi_player(scr):
 
     win.addch(food[0], food[1], '*')                                   # Prints the food
 
-    while key != 27 or key2 != 27:                             # While Esc key is not pressed
+    while key != 27:                             # While Esc key is not pressed
         win.border(0)
         win.addstr(0, 2, 'Score : ' + str(score_1) + ' ')                # Printing 'Score' and
         win.addstr(0, 66, 'Score_2 : ' + str(score_2) + ' ')
         win.addstr(0, 35, ' SNAKE ')                                   # 'SNAKE' strings
         win.timeout(30)
 
-        prevKey = key                                                  # Previous key pressed
+        prevKey = key
+        prevKey2 = key2                                                 # Previous key pressed
         event = win.getch()
-        key = key if event == -1 else event
+
+        if event != -1:
+            key = event
+            key2 = event
 
         if key == ord(' '):                                            # If SPACE BAR is pressed, wait for another
             key = -1                                                   # one (Pause/Resume)
@@ -167,22 +178,26 @@ def multi_player(scr):
             key = prevKey
             continue
 
-        prevKey2 = key2                                                  # Previous key pressed
-        event2 = win.getch()
-        key2 = key2 if event2 == -1 else event2
+        if key not in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, 27]:     # If an invalid key is pressed
+            key = prevKey
 
-        if key2 == ord(' '):                                            # If SPACE BAR is pressed, wait for another
-            key2 = -1                                                   # one (Pause/Resume)
-            while key2 != ord(' '):
-                key2 = win.getch()
-            key2 = prevKey
-            continue
-
-        if key2 not in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, 27, "w", "a", "s", "d"]:     # If an invalid key is pressed
+        if key2 not in [27, ord("w"), ord("a"), ord("s"), ord("d")]:     # If an invalid key is pressed
             key2 = prevKey2
 
-        snake_1.insert(0, [snake_1[0][0] + (key == KEY_DOWN and 1) + (key == KEY_UP and -1), snake_1[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)])
-        snake_2.insert(0, [snake_2[0][0] + (key == ord("s") and 1) + (key == ord("w") and -1), snake_2[0][1] + (key == ord("a") and -1) + (key == ord("d") and 1)])
+        snake_1.insert(
+            0,
+            [
+                snake_1[0][0] + (key == KEY_DOWN and 1) + (key == KEY_UP and -1),
+                snake_1[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)
+                ]
+        )
+        snake_2.insert(
+            0,
+            [
+                snake_2[0][0] + (key2 == ord("s") and 1) + (key2 == ord("w") and -1),
+                snake_2[0][1] + (key2 == ord("a") and -1) + (key2 == ord("d") and 1)
+            ]
+        )
 
         if snake_1[0][0] == 0:  # goes up
             snake_1[0][0] = 22
@@ -216,7 +231,7 @@ def multi_player(scr):
                     food = []
             win.addch(food[0], food[1], '*')
         else:
-            last = snake_1.pop()                                          # [1] If it does not eat the food, length decreases
+            last = snake_1.pop()
             win.addch(last[0], last[1], ' ')
         win.addch(snake_1[0][0], snake_1[0][1], '#')
 
@@ -229,9 +244,10 @@ def multi_player(scr):
                     food = []
             win.addch(food[0], food[1], '*')
         else:
-            last = snake_2.pop()                                          # [1] If it does not eat the food, length decreases
+            last = snake_2.pop()
             win.addch(last[0], last[1], ' ')
         win.addch(snake_2[0][0], snake_2[0][1], '+')
+        win.addch(0, 0, key2)
         win.refresh()
 
     # curses.endwin()
