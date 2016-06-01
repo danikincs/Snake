@@ -58,6 +58,46 @@ def end_scene(scr):                          # It appears, when player loses, re
     time.sleep(1)
 
 
+def multi_player_end_scene(scr):
+    win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
+    win.clear()
+    win.nodelay(0)
+    if winner == player_1:
+        message1 = "Game Over!"
+        win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
+        message2 = "Player 1 won!"
+        message3 = "Player 1 score is : " + str(score_1)
+        win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
+        win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message3)) // 2)+2, message3)
+        event = win.getch()
+        message4 = "Press Q to quit, or Press P to Play Again!"
+        win.addstr(((curses.LINES) // 2)-2, ((curses.COLS - len(message4)) // 2), message4)
+        if event == ord("p"):
+            start_screen(scr)
+        if event == ord("q"):
+            curses.endwin()
+            add()
+            print_score()
+        time.sleep(1)
+    if winner == player_2:
+        message1 = "Game Over!"
+        win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
+        message2 = "Player 2 won!"
+        message3 = "Player 2 score is : " + str(score_2)
+        win.addstr((curses.LINES) // 2, (curses.COLS - len(message2)) // 2, message2)
+        win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message3)) // 2)+2, message3)
+        event = win.getch()
+        message4 = "Press Q to quit, or Press P to Play Again!"
+        win.addstr(((curses.LINES) // 2)-2, ((curses.COLS - len(message4)) // 2), message4)
+        if event == ord("p"):
+            start_screen(scr)
+        if event == ord("q"):
+            curses.endwin()
+            add()
+            print_score()
+        time.sleep(1)
+
+
 def single_player(scr):
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     min_max = [curses.LINES, curses.COLS]
@@ -149,6 +189,10 @@ def multi_player(scr):
     score_1 = 0
     global score_2
     score_2 = 0
+    global player_1
+    player_1 = ""
+    global player_2
+    player_2 = ""
 
     snake_1 = [[4, 10], [4, 9], [4, 8]]                                     # Initial snake co-ordinates
     snake_2 = [[6, 14], [6, 13], [6, 12]]
@@ -161,7 +205,7 @@ def multi_player(scr):
         win.addstr(0, 2, 'Score : ' + str(score_1) + ' ')                # Printing 'Score' and
         win.addstr(0, 66, 'Score_2 : ' + str(score_2) + ' ')
         win.addstr(0, 35, ' SNAKE ')                                   # 'SNAKE' strings
-        win.timeout(30)
+        win.timeout(60)
 
         prevKey = key
         prevKey2 = key2                                                 # Previous key pressed
@@ -217,10 +261,18 @@ def multi_player(scr):
         if snake_2[0][1] == min_max[1]:
             snake_2[0][1] = 1
 
-        # if snake_1[0] in snake_1[1:]:
-        #     end_scene(scr)
-        # if snake_2[0] in snake_2[1:]:
-        #     end_scene(scr)
+        if snake_1[0] in snake_1[1:]:
+            end_scene(scr)
+        if snake_2[0] in snake_2[1:]:
+            end_scene(scr)
+        if snake_1[0] in snake_2[0:]:
+            global winner
+            winner = player_2
+            multi_player_end_scene(scr)
+        if snake_2[0] in snake_1[0:]:
+            global winner
+            winner = player_1
+            multi_player_end_scene(scr)
 
         if snake_1[0] == food:                                            # When snake eats the food
             food = []
