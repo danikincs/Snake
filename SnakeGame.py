@@ -10,17 +10,19 @@ curses.initscr()
 
 def add():                                    # Add .txt file if not exists, stores player score.
     input_file = open("name.txt", "a")
-    name = input("enter your username: ")
+    name = input("enter your name: ")
     print(name, " ", score, file=input_file)
     input_file.close()
 
 
-def print_score():                           # S hows score in terminal, previous scores also appears
+def print_score():                           #Shows score in terminal, previous scores also appears
     output_file = open("name.txt", "r+")
     text_in_file = output_file.read()
     print(text_in_file)
     output_file.close()
     exit()
+
+#def set_player_names(scr):
 
 
 def start_screen(scr):      # Start menu where you can choose single, or multiplayer game mode.
@@ -28,7 +30,7 @@ def start_screen(scr):      # Start menu where you can choose single, or multipl
     win.clear()
     win.nodelay(0)
     message1 = "Welcome to the Sneaky Game !"
-    message2 = "Press 1 to play Single Player, or Press 2 to play Multi Player!"
+    message2 = "Press 1 to Single Player | Press 2 to Multi Player!"
     win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
     win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2)+2, message2)
     event = win.getch()
@@ -42,9 +44,9 @@ def end_scene(scr):                          # It appears, when player loses, re
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     win.nodelay(0)
+    message3 = "Your score is : " + str(score)
     message1 = "Game Over!"
     message2 = "Press Q to quit, or Press P to Play Again!"
-    message3 = "Your score is : " + str(score)
     win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
     win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2)+2, message2)
     win.addstr(((curses.LINES) // 2)-2, ((curses.COLS - len(message3)) // 2), message3)
@@ -63,40 +65,37 @@ def multi_player_end_scene(scr):
     win.clear()
     win.nodelay(0)
     if winner == player_1:
-        message1 = "Game Over!"
-        win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
-        message2 = "Player 1 won!"
-        message3 = "Player 1 score is : " + str(score_1)
-        win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
-        win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message3)) // 2)+2, message3)
-        event = win.getch()
+        message1 = "Player 1 has won!"
+        message2 = "Player 1 score : " + str(score_1)
+        message3 = "Game is over!"
         message4 = "Press Q to quit, or Press P to Play Again!"
-        win.addstr(((curses.LINES) // 2)-2, ((curses.COLS - len(message4)) // 2), message4)
+        win.addstr(curses.LINES // 2, (curses.COLS - len(message1)) // 2, message1)
+        win.addstr(curses.LINES // 2+2, (curses.COLS - len(message2)) // 2, message2)
+        win.addstr(curses.LINES // 2-2, (curses.COLS - len(message3)) // 2, message3)
+        win.addstr(curses.LINES // 2+4, (curses.COLS - len(message4)) // 2, message4)
+        event = win.getch()
         if event == ord("p"):
             start_screen(scr)
         if event == ord("q"):
             curses.endwin()
-            add()
-            print_score()
-        time.sleep(1)
+            time.sleep(1)
+            exit()
     if winner == player_2:
-        message1 = "Game Over!"
-        win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
-        message2 = "Player 2 won!"
-        message3 = "Player 2 score is : " + str(score_2)
-        win.addstr((curses.LINES) // 2, (curses.COLS - len(message2)) // 2, message2)
-        win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message3)) // 2)+2, message3)
-        event = win.getch()
+        message1 = "Player 2 has won!"
+        message2 = "Player 2 score : " + str(score_2)
+        message3 = "Game is over!"
         message4 = "Press Q to quit, or Press P to Play Again!"
-        win.addstr(((curses.LINES) // 2)-2, ((curses.COLS - len(message4)) // 2), message4)
+        win.addstr(curses.LINES // 2, (curses.COLS - len(message1)) // 2, message1)
+        win.addstr(curses.LINES // 2+2, (curses.COLS - len(message2)) // 2, message2)
+        win.addstr(curses.LINES // 2-2, (curses.COLS - len(message3)) // 2, message3)
+        win.addstr(curses.LINES // 2+4, (curses.COLS - len(message4)) // 2, message4)
+        event = win.getch()
         if event == ord("p"):
             start_screen(scr)
         if event == ord("q"):
             curses.endwin()
-            add()
-            print_score()
-        time.sleep(1)
-
+            time.sleep(1)
+            exit()
 
 def single_player(scr):
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
@@ -114,6 +113,8 @@ def single_player(scr):
 
     snake = [[4, 10], [4, 9], [4, 8]]                                     # Initial snake co-ordinates
     food = [10, 20]                                                     # First food co-ordinates
+    enemy = [20,10]
+    win.addch(enemy[0], enemy[1], '-')
 
     win.addch(food[0], food[1], '*')                                   # Prints the food
 
@@ -145,14 +146,8 @@ def single_player(scr):
             ]
         )
 
-        if snake[0][0] == 0:  # goes up
-            snake[0][0] = 22
-        if snake[0][1] == 0:  # goes left
-            snake[0][1] = min_max[0]+54
-        if snake[0][0] == min_max[0]:
-            snake[0][0] = 1
-        if snake[0][1] == min_max[1]:
-            snake[0][1] = 1
+        if snake[0][0] == 0 or snake[0][0] == min_max[0] or snake[0][1] == 0 or snake[0][1] == min_max[1]:
+            end_scene(scr)
 
         if snake[0] in snake[1:]:
             end_scene(scr)
@@ -169,6 +164,16 @@ def single_player(scr):
             last = snake.pop()
             win.addch(last[0], last[1], ' ')
         win.addch(snake[0][0], snake[0][1], '#')
+
+        if snake[0] == enemy:
+            enemy = []
+            score -= 1
+            # for enemy in range(3):
+            while enemy == []:
+                enemy = [randint(1, 18), randint(1, 58)]                 # Calculating next food's coordinates
+                if enemy in snake:
+                    enemy = []
+            win.addch(enemy[0], enemy[1], '-')
 
     curses.endwin()
 
@@ -202,7 +207,7 @@ def multi_player(scr):
 
     while key != 27:                             # While Esc key is not pressed
         win.border(0)
-        win.addstr(0, 2, 'Score : ' + str(score_1) + ' ')                # Printing 'Score' and
+        win.addstr(0, 2, 'Score_1: ' + str(score_1) + ' ')                # Printing 'Score' and
         win.addstr(0, 66, 'Score_2 : ' + str(score_2) + ' ')
         win.addstr(0, 35, ' SNAKE ')                                   # 'SNAKE' strings
         win.timeout(60)
@@ -269,7 +274,7 @@ def multi_player(scr):
             global winner
             winner = player_2
             multi_player_end_scene(scr)
-        if snake_2[0] in snake_1[0:]:
+        elif snake_2[0] in snake_1[0:]:
             global winner
             winner = player_1
             multi_player_end_scene(scr)
@@ -306,3 +311,9 @@ def multi_player(scr):
     end_scene(scr)
 
 curses.wrapper(start_screen)
+#Problémák: magába menés az iránnyal ellentétes gomb lenyomásával
+#multiplayer print score-nál single player print score
+#magába menés esetén single player end scene jön be multinál kódba van
+#space gond multinál
+#esetleg neveket hozzáadni még input
+#néha megy tovább a játék a scene során RANDOM GOMBOK LENYOMÁSAKOR!!
