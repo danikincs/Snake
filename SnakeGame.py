@@ -64,6 +64,7 @@ def multi_player_end_scene(scr):
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     win.nodelay(0)
+    global winner
     if winner == player_1:
         message1 = "Player 1 has won!"
         message2 = "Player 1 score : " + str(score_1)
@@ -137,6 +138,20 @@ def single_player(scr):
 
         if key not in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, 27]:     # If an invalid key is pressed
             key = prevKey
+        if prevKey == KEY_UP:
+            if key in [KEY_DOWN]:
+                key = prevKey
+        if prevKey == KEY_DOWN:
+            if key in [KEY_UP]:
+                key = prevKey
+        if prevKey == KEY_RIGHT:
+            if key in [KEY_LEFT]:
+                key = prevKey
+        if prevKey == KEY_LEFT:
+            if key in [KEY_RIGHT]:
+                key = prevKey
+
+
 
         snake.insert(
             0,
@@ -150,6 +165,9 @@ def single_player(scr):
             end_scene(scr)
 
         if snake[0] in snake[1:]:
+            end_scene(scr)
+
+        if score < 0:
             end_scene(scr)
 
         if snake[0] == food:                                            # When snake eats the food
@@ -170,7 +188,7 @@ def single_player(scr):
             score -= 1
             # for enemy in range(3):
             while enemy == []:
-                enemy = [randint(1, 18), randint(1, 58)]                 # Calculating next food's coordinates
+                enemy = [randint(1, 18), randint(1, 58)]                 # Calculating next enemy's coordinates
                 if enemy in snake:
                     enemy = []
             win.addch(enemy[0], enemy[1], '-')
@@ -220,18 +238,35 @@ def multi_player(scr):
             key = event
             key2 = event
 
-        if key == ord(' '):                                            # If SPACE BAR is pressed, wait for another
-            key = -1                                                   # one (Pause/Resume)
-            while key != ord(' '):
-                key = win.getch()
-            key = prevKey
-            continue
-
         if key not in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, 27]:     # If an invalid key is pressed
             key = prevKey
+        if prevKey == KEY_UP:
+            if key in [KEY_DOWN]:
+                key = prevKey
+        if prevKey == KEY_DOWN:
+            if key in [KEY_UP]:
+                key = prevKey
+        if prevKey == KEY_RIGHT:
+            if key in [KEY_LEFT]:
+                key = prevKey
+        if prevKey == KEY_LEFT:
+            if key in [KEY_RIGHT]:
+                key = prevKey
 
         if key2 not in [27, ord("w"), ord("a"), ord("s"), ord("d")]:     # If an invalid key is pressed
             key2 = prevKey2
+        if prevKey2 == ord("w"):
+            if key2 in [ord("s")]:
+                key2 = prevKey2
+        if prevKey2 == ord("s"):
+            if key2 in [ord("w")]:
+                key2 = prevKey2
+        if prevKey2 == ord("d"):
+            if key2 in [ord("a")]:
+                key2 = prevKey2
+        if prevKey2 == ord("a"):
+            if key2 in [ord("d")]:
+                key2 = prevKey2
 
         snake_1.insert(
             0,
@@ -273,10 +308,12 @@ def multi_player(scr):
         if snake_1[0] in snake_2[0:]:
             global winner
             winner = player_2
+            time.sleep(1)
             multi_player_end_scene(scr)
-        elif snake_2[0] in snake_1[0:]:
+        if snake_2[0] in snake_1[0:]:
             global winner
             winner = player_1
+            time.sleep(1)
             multi_player_end_scene(scr)
 
         if snake_1[0] == food:                                            # When snake eats the food
@@ -312,8 +349,6 @@ def multi_player(scr):
 
 curses.wrapper(start_screen)
 #Problémák: magába menés az iránnyal ellentétes gomb lenyomásával
-#multiplayer print score-nál single player print score
 #magába menés esetén single player end scene jön be multinál kódba van
-#space gond multinál
-#esetleg neveket hozzáadni még input
+#READY funkcio
 #néha megy tovább a játék a scene során RANDOM GOMBOK LENYOMÁSAKOR!!
