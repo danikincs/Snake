@@ -6,6 +6,10 @@ import time
 import random
 from random import randint
 curses.initscr()
+curses.start_color()
+curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+
 
 
 def add():                                    # Add .txt file if not exists, stores player score.
@@ -44,7 +48,7 @@ def multiplayer_ready_screen(scr):
     if event == ord("w"):
         player_1_ready = True
         win.refresh
-        time.sleep(2)
+        time.sleep(1)
 
     if player_1_ready == True and player_2_ready == True:
         multi_player(scr)
@@ -154,6 +158,7 @@ def single_player(scr):
     win.border(0)
     win.nodelay(1)
     game_over = False
+    curses.start_color()
 
     key = KEY_RIGHT
     global score                                                  # Initializing values
@@ -228,7 +233,7 @@ def single_player(scr):
         else:
             last = snake.pop()
             win.addch(last[0], last[1], ' ')
-        win.addch(snake[0][0], snake[0][1], '#')
+        win.addch(snake[0][0], snake[0][1], '•',)
 
         if snake[0] == enemy:
             enemy = []
@@ -272,8 +277,8 @@ def multi_player(scr):
 
     while key != 27:                             # While Esc key is not pressed
         win.border(0)
-        win.addstr(0, 2, 'Score_1: ' + str(score_1) + ' ')                # Printing 'Score' and
-        win.addstr(0, 66, 'Score_2 : ' + str(score_2) + ' ')
+        win.addstr(0, 2, 'Player 1 score: ' + str(score_1) + ' ', curses.color_pair(2))                # Printing 'Score' and
+        win.addstr(0, 60, 'Player 2 score: ' + str(score_2) + ' ', curses.color_pair(1))
         win.addstr(0, 35, ' SNAKE ')                                   # 'SNAKE' strings
         win.timeout(60)
 
@@ -376,7 +381,7 @@ def multi_player(scr):
         else:
             last = snake_1.pop()
             win.addch(last[0], last[1], ' ')
-        win.addch(snake_1[0][0], snake_1[0][1], '#')
+        win.addch(snake_1[0][0], snake_1[0][1], '•', curses.color_pair(2))
 
         if snake_2[0] == food:                                            # When snake eats the food
             food = []
@@ -389,7 +394,7 @@ def multi_player(scr):
         else:
             last = snake_2.pop()
             win.addch(last[0], last[1], ' ')
-        win.addch(snake_2[0][0], snake_2[0][1], '+')
+        win.addch(snake_2[0][0], snake_2[0][1], '•', curses.color_pair(1))
         win.addch(0, 0, key2)
         win.refresh()
 
