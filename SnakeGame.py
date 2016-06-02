@@ -33,13 +33,13 @@ def multiplayer_ready_screen(scr):
     win.clear()
     win.nodelay(0)
     message1 = "Welcome to the Multiplayer Fight !"
-    message2 = "Player 1 press '↑' to Ready!"
+    message2 = "Player 1 press 'ENTER' to Ready!"
     message3 = "Player 1 movement: arrows | Player 2 movement: WASD"
     win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
     win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2), message2)
     win.addstr(((curses.LINES) // 2)+1, ((curses.COLS - len(message3)) // 2), message3)
     event2 = win.getch()
-    if event2 == ord("2"):
+    if event2 == ord("\n"):
         player_2_ready = True
         message4 = "Player 2 press 'W' to Ready!"
         win.addstr(((curses.LINES) // 2)+3, ((curses.COLS - len(message4)) // 2), message4)
@@ -48,7 +48,7 @@ def multiplayer_ready_screen(scr):
     if event == ord("w"):
         player_1_ready = True
         win.refresh
-        time.sleep(1)
+        time.sleep(0.5)
 
     if player_1_ready == True and player_2_ready == True:
         multi_player(scr)
