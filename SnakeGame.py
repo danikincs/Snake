@@ -22,7 +22,33 @@ def print_score():                           #Shows score in terminal, previous 
     output_file.close()
     exit()
 
-#def set_player_names(scr):
+def multiplayer_ready_screen(scr):
+    player_1_ready = False
+    player_2_ready = False
+    win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
+    win.clear()
+    win.nodelay(0)
+    message1 = "Welcome to the Multiplayer Fight !"
+    message2 = "Player 1 press '↑' to Ready!"
+    message3 = "Player 1 movement: arrows | Player 2 movement: WASD"
+    win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
+    win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2), message2)
+    win.addstr(((curses.LINES) // 2)+1, ((curses.COLS - len(message3)) // 2), message3)
+    event2 = win.getch()
+    if event2 == ord("2"):
+        player_2_ready = True
+        message4 = "Player 2 press 'W' to Ready!"
+        win.addstr(((curses.LINES) // 2)+3, ((curses.COLS - len(message4)) // 2), message4)
+        win.refresh()
+    event = win.getch()
+    if event == ord("w"):
+        player_1_ready = True
+        win.refresh
+        time.sleep(2)
+
+    if player_1_ready == True and player_2_ready == True:
+        multi_player(scr)
+
 
 
 def start_screen(scr):      # Start menu where you can choose single, or multiplayer game mode.
@@ -37,7 +63,7 @@ def start_screen(scr):      # Start menu where you can choose single, or multipl
     if event == ord("1"):
         single_player(scr)
     if event == ord("2"):
-        multi_player(scr)
+        multiplayer_ready_screen(scr)
 
 
 def end_scene(scr):                          # It appears, when player loses, replay or exit
@@ -57,15 +83,18 @@ def end_scene(scr):                          # It appears, when player loses, re
         curses.endwin()
         add()
         print_score()
+    else:
+        exit()
     time.sleep(1)
 
 
 def multi_player_end_scene(scr):
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
+    curses.endwin()
     win.nodelay(0)
     global winner
-    if winner == player_1:
+    if score_1 > score_2:
         message1 = "Player 1 has won!"
         message2 = "Player 1 score : " + str(score_1)
         message3 = "Game is over!"
@@ -81,13 +110,31 @@ def multi_player_end_scene(scr):
             curses.endwin()
             time.sleep(1)
             exit()
-    if winner == player_2:
+        else:
+            exit()
+    if score_2 > score_1:
         message1 = "Player 2 has won!"
         message2 = "Player 2 score : " + str(score_2)
         message3 = "Game is over!"
         message4 = "Press Q to quit, or Press P to Play Again!"
         win.addstr(curses.LINES // 2, (curses.COLS - len(message1)) // 2, message1)
         win.addstr(curses.LINES // 2+2, (curses.COLS - len(message2)) // 2, message2)
+        win.addstr(curses.LINES // 2-2, (curses.COLS - len(message3)) // 2, message3)
+        win.addstr(curses.LINES // 2+4, (curses.COLS - len(message4)) // 2, message4)
+        event = win.getch()
+        if event == ord("p"):
+            start_screen(scr)
+        if event == ord("q"):
+            curses.endwin()
+            time.sleep(1)
+            exit()
+        else:
+            exit()
+    if score_2 == score_1:
+        message1 = "Nobody Won"
+        message3 = "Game is over!"
+        message4 = "Press Q to quit, or Press P to Play Again!"
+        win.addstr(curses.LINES // 2, (curses.COLS - len(message1)) // 2, message1)
         win.addstr(curses.LINES // 2-2, (curses.COLS - len(message3)) // 2, message3)
         win.addstr(curses.LINES // 2+4, (curses.COLS - len(message4)) // 2, message4)
         event = win.getch()
@@ -302,18 +349,20 @@ def multi_player(scr):
             snake_2[0][1] = 1
 
         if snake_1[0] in snake_1[1:]:
-            end_scene(scr)
+            multi_player_end_scene(scr)
         if snake_2[0] in snake_2[1:]:
-            end_scene(scr)
+            multi_player_end_scene(scr)
+
+        global winner
         if snake_1[0] in snake_2[0:]:
-            global winner
-            winner = player_2
+            # winner = player_2
             time.sleep(1)
+            curses.endwin()
             multi_player_end_scene(scr)
         if snake_2[0] in snake_1[0:]:
-            global winner
-            winner = player_1
+            # winner = player_1
             time.sleep(1)
+            curses.endwin()
             multi_player_end_scene(scr)
 
         if snake_1[0] == food:                                            # When snake eats the food
@@ -348,7 +397,4 @@ def multi_player(scr):
     end_scene(scr)
 
 curses.wrapper(start_screen)
-#Problémák: magába menés az iránnyal ellentétes gomb lenyomásával
-#magába menés esetén single player end scene jön be multinál kódba van
-#READY funkcio
 #néha megy tovább a játék a scene során RANDOM GOMBOK LENYOMÁSAKOR!!
