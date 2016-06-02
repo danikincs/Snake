@@ -6,6 +6,7 @@ import time
 import random
 from random import randint
 curses.initscr()
+curses.start_color()
 
 
 def add():                                    # Add .txt file if not exists, stores player score.
@@ -27,6 +28,7 @@ def start_screen(scr):      # Start menu where you can choose single, or multipl
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     win.nodelay(0)
+    stdscr.addstr(0,0, "RED ALERT!", curses.color_pair(1))
     message1 = "Welcome to the Sneaky Game !"
     message2 = "Press 1 to play Single Player, or Press 2 to play Multi Player!"
     win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
@@ -109,23 +111,25 @@ def single_player(scr):
     game_over = False
 
     key = KEY_RIGHT
-    global score                                                  # Initializing values
+    global score                                                       # Initializing values
     score = 0
 
-    snake = [[4, 10], [4, 9], [4, 8]]                                     # Initial snake co-ordinates
-    food = [10, 20]                                                     # First food co-ordinates
+    snake = [[4, 10], [4, 9], [4, 8]]                                  # Initial snake co-ordinates
+    food = [10, 20]                                                    # First food co-ordinates
 
     win.addch(food[0], food[1], '*')                                   # Prints the food
 
-    while key != 27 or game_over == False:                              # While Esc key is not pressed
+    while key != 27 or game_over == False:                             # While Esc key is not pressed
         win.border(0)
         win.addstr(0, 2, 'Score : ' + str(score) + ' ')                # Printing 'Score' and
         win.addstr(0, 27, ' SNAKE ')                                   # 'SNAKE' strings
-        win.timeout(90 - (len(snake)+1))          # Increases the speed of Snake as its length increases
+        win.timeout(90 - (len(snake)+1))                               # Increases the speed of Snake as its length increases
 
         prevKey = key                                                  # Previous key pressed
         event = win.getch()
-        key = key if event == -1 else event
+
+        if event != -1:
+            key = event
 
         if key == ord(' '):                                            # If SPACE BAR is pressed, wait for another
             key = -1                                                   # one (Pause/Resume)
@@ -144,6 +148,11 @@ def single_player(scr):
                 snake[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)
             ]
         )
+
+        # while prevKey == KEY_UP:
+        #     if key == KEY_DOWN:
+        #         event = KEY_UP
+
 
         if snake[0][0] == 0:  # goes up
             snake[0][0] = 22
