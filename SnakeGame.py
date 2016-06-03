@@ -36,13 +36,13 @@ def multiplayer_ready_screen(scr):  # Multiplayer start screen, contains informa
     message2 = "Player 1 press 'ENTER' to Ready!"
     message3 = "Player 1 movement: arrows | Player 2 movement: WASD"
     win.addstr((curses.LINES) // 2, (curses.COLS - len(message1)) // 2, message1)
-    win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2), message2)
+    win.addstr(((curses.LINES) // 2)+2, ((curses.COLS - len(message2)) // 2), message2, curses.color_pair(2))
     win.addstr(((curses.LINES) // 2)+1, ((curses.COLS - len(message3)) // 2), message3)
     event2 = win.getch()
     if event2 == ord("\n"):
         player_2_ready = True
         message4 = "Player 2 press 'W' to Ready!"
-        win.addstr(((curses.LINES) // 2)+3, ((curses.COLS - len(message4)) // 2), message4)
+        win.addstr(((curses.LINES) // 2)+3, ((curses.COLS - len(message4)) // 2), message4, curses.color_pair(1))
         win.refresh()
     event = win.getch()
     if event == ord("w"):
