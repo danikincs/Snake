@@ -272,7 +272,7 @@ def multi_player(scr):  # Main multi player running
     snake_2 = [[20, 14], [20, 13], [20, 12]]
     food = [10, 20]                                                    # First food co-ordinates
 
-    win.addch(food[0], food[1], '*')                                   # Prints the food
+    win.addch(food[0], food[1], '•')                                   # Prints the food
 
     while key != 27:                             # While Esc key is not pressed
         win.border(0)
@@ -374,7 +374,7 @@ def multi_player(scr):  # Main multi player running
                 food = [randint(1, 19), randint(1, 59)]                 # Calculating next food's coordinates
                 if food in snake_1:
                     food = []
-            win.addch(food[0], food[1], '*')
+            win.addch(food[0], food[1], '•')
         else:
             last = snake_1.pop()
             win.addch(last[0], last[1], ' ')
@@ -387,7 +387,7 @@ def multi_player(scr):  # Main multi player running
                 food = [randint(1, 19), randint(1, 59)]                 # Calculating next food's coordinates
                 if food in snake_2:
                     food = []
-            win.addch(food[0], food[1], '*')
+            win.addch(food[0], food[1], '•')
         else:
             last = snake_2.pop()
             win.addch(last[0], last[1], ' ')
