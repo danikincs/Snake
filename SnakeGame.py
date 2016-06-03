@@ -335,18 +335,18 @@ def multi_player(scr):  # Main multi player running
         )
 
         if snake_1[0][0] == 0:  # goes up
-            snake_1[0][0] = 22
+            snake_1[0][0] = min_max[0]-1
         if snake_1[0][1] == 0:  # goes left
-            snake_1[0][1] = min_max[0]+54
+            snake_1[0][1] = min_max[1]-1
         if snake_1[0][0] == min_max[0]:
             snake_1[0][0] = 1
         if snake_1[0][1] == min_max[1]:
             snake_1[0][1] = 1
 
         if snake_2[0][0] == 0:  # goes up
-            snake_2[0][0] = 22
+            snake_2[0][0] = min_max[0]-1
         if snake_2[0][1] == 0:  # goes left
-            snake_2[0][1] = min_max[0]+54
+            snake_2[0][1] = min_max[1]-1
         if snake_2[0][0] == min_max[0]:
             snake_2[0][0] = 1
         if snake_2[0][1] == min_max[1]:
