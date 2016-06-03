@@ -7,11 +7,18 @@ import random
 from random import randint
 curses.initscr()
 curses.start_color()
-curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)  # Initializing colors
 curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
 
 
-def print_score():                           # Shows score in terminal, previous scores also appears
+def add():                                    # Add .txt file if not exists, stores player score.
+    input_file = open("name.txt", "a")
+    name = input("enter your username: ")
+    print(name, " ", score, file=input_file)
+    input_file.close()
+
+
+def print_score():                           # Shows scores in terminal, previous scores also appears
     output_file = open("name.txt", "r+")
     text_in_file = output_file.read()
     print(text_in_file)
@@ -19,7 +26,7 @@ def print_score():                           # Shows score in terminal, previous
     exit()
 
 
-def multiplayer_ready_screen(scr):
+def multiplayer_ready_screen(scr):  # Multiplayer start screen, contains information
     player_1_ready = False
     player_2_ready = False
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
@@ -62,7 +69,7 @@ def start_screen(scr):      # Start menu where you can choose single, or multipl
         multiplayer_ready_screen(scr)
 
 
-def end_scene(scr):                          # It appears, when player loses, replay or exit
+def end_scene(scr):   # It appears, when player loses, replays or quits (single player)
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     win.nodelay(0)
@@ -84,13 +91,13 @@ def end_scene(scr):                          # It appears, when player loses, re
     time.sleep(1)
 
 
-def multi_player_end_scene(scr):
+def multi_player_end_scene(scr):  # Same as above just in Multiplayer
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     win.clear()
     curses.endwin()
     win.nodelay(0)
     global winner
-    if score_1 > score_2:
+    if score_1 > score_2:  # Player 1 winning
         message1 = "Player 1 has won!"
         message2 = "Player 1 score : " + str(score_1)
         message3 = "Game is over!"
@@ -108,7 +115,7 @@ def multi_player_end_scene(scr):
             exit()
         else:
             exit()
-    if score_2 > score_1:
+    if score_2 > score_1:  # Player 2 winning
         message1 = "Player 2 has won!"
         message2 = "Player 2 score : " + str(score_2)
         message3 = "Game is over!"
@@ -126,7 +133,7 @@ def multi_player_end_scene(scr):
             exit()
         else:
             exit()
-    if score_2 == score_1:
+    if score_2 == score_1:  # If score equals
         message1 = "Nobody Won"
         message3 = "Game is over!"
         message4 = "Press Q to quit, or Press P to Play Again!"
@@ -142,7 +149,7 @@ def multi_player_end_scene(scr):
             exit()
 
 
-def single_player(scr):
+def single_player(scr):  # Main single player running
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     min_max = [curses.LINES, curses.COLS]
     win.keypad(1)
@@ -159,16 +166,16 @@ def single_player(scr):
 
     snake = [[4, 10], [4, 9], [4, 8]]                                  # Initial snake co-ordinates
     food = [10, 20]                                                    # First food co-ordinates
-    snake = [[4, 10], [4, 9], [4, 8]]                                     # Initial snake co-ordinates
-    food = [10, 20]                                                     # First food co-ordinates
+    snake = [[4, 10], [4, 9], [4, 8]]                                  # Initial snake co-ordinates
+    food = [10, 20]                                                    # First food co-ordinates
     enemy = [20, 10]
     win.addch(enemy[0], enemy[1], '-')
-    win.addch(food[0], food[1], '*')                                   # Prints the food
+    win.addch(food[0], food[1], '*')                                   # Printing the food
 
     while key != 27 or game_over is False:                             # While Esc key is not pressed
         win.border(0)
         win.addstr(0, 2, 'Score : ' + str(score) + ' ')                # Printing 'Score' and
-        win.addstr(0, 27, ' SNAKE ')                                   # 'SNAKE' strings
+        win.addstr(0, 27, ' SNAKE ')
         win.timeout(90 - (len(snake) + 1))
 
         prevKey = key                                                  # Previous key pressed
@@ -177,8 +184,8 @@ def single_player(scr):
         if event != -1:
             key = event
 
-        if key == ord(' '):                                            # If SPACE BAR is pressed, wait for another
-            key = -1                                                   # one (Pause/Resume)
+        if key == ord(' '):
+            key = -1                                                   # (Pause/Resume)
             while key != ord(' '):
                 key = win.getch()
             key = prevKey
@@ -202,19 +209,10 @@ def single_player(scr):
         snake.insert(
             0,
             [
-                snake[0][0] + (key == KEY_DOWN and 1) + (key == KEY_UP and -1),
+                snake[0][0] + (key == KEY_DOWN and 1) + (key == KEY_UP and -1),  # Snake movement
                 snake[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)
             ]
         )
-
-        if snake[0][0] == 0:  # goes up
-            snake[0][0] = 22
-        if snake[0][1] == 0:  # goes left
-            snake[0][1] = min_max[0]+54
-        if snake[0][0] == min_max[0]:
-            snake[0][0] = 1
-        if snake[0][1] == min_max[1]:
-            snake[0][1] = 1
         if snake[0][0] == 0 or snake[0][0] == min_max[0] or snake[0][1] == 0 or snake[0][1] == min_max[1]:
             end_scene(scr)
 
@@ -249,7 +247,7 @@ def single_player(scr):
     curses.endwin()
 
 
-def multi_player(scr):
+def multi_player(scr):  # Main multi player running
     win = curses.newwin(curses.LINES, curses.COLS, 0, 0)
     min_max = [curses.LINES, curses.COLS]
     win.keypad(1)
@@ -280,8 +278,8 @@ def multi_player(scr):
         win.border(0)
         win.addstr(0, 2, 'Player 1 score: ' + str(score_1) + ' ', curses.color_pair(2))
         win.addstr(0, 60, 'Player 2 score: ' + str(score_2) + ' ', curses.color_pair(1))
-        win.addstr(0, 35, ' SNAKE ')                                   # 'SNAKE' strings
-        win.timeout(60)
+        win.addstr(0, 35, ' SNAKE ')
+        win.timeout(80)
 
         prevKey = key
         prevKey2 = key2                                                 # Previous key pressed
@@ -373,7 +371,7 @@ def multi_player(scr):
             food = []
             score_1 += 1
             while food == []:
-                food = [randint(1, 18), randint(1, 58)]                 # Calculating next food's coordinates
+                food = [randint(1, 19), randint(1, 59)]                 # Calculating next food's coordinates
                 if food in snake_1:
                     food = []
             win.addch(food[0], food[1], '*')
@@ -386,7 +384,7 @@ def multi_player(scr):
             food = []
             score_2 += 1
             while food == []:
-                food = [randint(1, 18), randint(1, 58)]                 # Calculating next food's coordinates
+                food = [randint(1, 19), randint(1, 59)]                 # Calculating next food's coordinates
                 if food in snake_2:
                     food = []
             win.addch(food[0], food[1], '*')
