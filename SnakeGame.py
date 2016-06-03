@@ -271,7 +271,7 @@ def multi_player(scr):
     player_2 = ""
 
     snake_1 = [[4, 10], [4, 9], [4, 8]]                                     # Initial snake co-ordinates
-    snake_2 = [[6, 14], [6, 13], [6, 12]]
+    snake_2 = [[20, 14], [20, 13], [20, 12]]
     food = [10, 20]                                                    # First food co-ordinates
 
     win.addch(food[0], food[1], '*')                                   # Prints the food
